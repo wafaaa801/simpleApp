@@ -1,5 +1,5 @@
-import { Avatar, List, ListItem } from 'react-native-elements';
-import React, { useState, useRef } from "react";
+import { SearchBar } from 'react-native-elements';
+import React, { useState, useEffect } from "react";
 import { 
     View, 
     Switch, 
@@ -41,6 +41,12 @@ const cartData = [
 ]
 
 const Item = ({ name, price, image }) => {
+    const [masterData, setMasterData] = useState([]);
+
+    useEffect(() =>{
+        setMasterData(cartData);
+    }, [])
+
     const [quantity, setQuantity] = useState(0);
     var newQuantity;
 
@@ -67,8 +73,8 @@ const Item = ({ name, price, image }) => {
                         style={styles.decrementButton} 
                         onPress={() => decrement()}
                     >
-                        <Text style={{
-                            ...styles.itemText, 
+                    {/* <Text style={{ color: 'black' }}>-</Text> */}
+                        <Text style={{ 
                             fontSize: 20, 
                             color: 'black', 
                             textAlign: 'center', 
@@ -89,7 +95,6 @@ const Item = ({ name, price, image }) => {
                         onPress={() => increment()}
                     >
                         <Text style={{
-                            ...styles.itemText, 
                             fontSize: 20, 
                             color: 'black', 
                             textAlign: 'center'}}
@@ -106,7 +111,10 @@ const Item = ({ name, price, image }) => {
     )
 }
 
+
 const AddToCartScreen = () => {
+    const [search, setSearch] = useState('');
+    const [data, setData] = useState([]);
 
     const renderItem = ({ item }) => (
         <Item image={item.image}
@@ -115,6 +123,36 @@ const AddToCartScreen = () => {
         />
     )
 
+    const renderEmptyList = () => {
+        return(
+            <View style={{ flex: 1 }}>
+                <Text style={{textAlign: 'center', marginTop: 50}}>Enter your furniture above...</Text>
+            </View>
+        )
+    }
+    
+    const searchFilterFunction = (text) => {
+        
+        if(text) {
+            const newData = cartData.filter(item => {
+                const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+                const textData = text.toUpperCase();
+        
+                return itemData.indexOf(textData) > -1;
+            })
+
+            console.log('this text: ', text)
+            console.log(newData)
+            setData(newData);
+            setSearch(text);
+        }
+        
+        else {
+            setData(cartData);
+            setSearch(text);
+        }
+    }
+    
     return(
         <View style={styles.container}>
             <LinearGradient
@@ -128,10 +166,20 @@ const AddToCartScreen = () => {
                 }}
             />
             <SafeAreaView style={styles.flatlistContainer}>
+                <SearchBar
+                    placeholder="Search for furnitures..."
+                    lightTheme
+                    round
+                    onChangeText={(text) => searchFilterFunction(text)}
+                    onClear={(text) => searchFilterFunction('')}
+                    autocorrect={false}
+                    value={search}
+                /> 
                 <FlatList
-                    data={cartData}
-                    keyExtractor={item => item.id}
+                    data={data}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={renderItem}
+                    ListEmptyComponent={renderEmptyList}
                 />
             </SafeAreaView>
         </View>
@@ -154,6 +202,7 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     flatlistContainer: {
+        flex: 1,
         width: '80%',
         top: 50
     },
