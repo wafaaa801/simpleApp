@@ -7,7 +7,7 @@ const BottomTabBar = (route) => ({
         if (route.name === 'Profile') {
             return <Ionicons name={'ios-person'} size={20} color={'#808080'} />;
         }
-        else if (route.name === 'Add To Cart') {
+        else if (route.name === 'Shopping Cart') {
             return <FontAwesome5 name={'shopping-bag'} size={20} color={'#808080'} />;
         }
         else {

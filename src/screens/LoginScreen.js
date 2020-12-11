@@ -1,17 +1,47 @@
 import React, { useState, useRef } from "react";
-import { View, Switch, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from "react-native";
 import { TextInput } from 'react-native-paper';
 import { TextInputMask } from 'react-native-masked-text';
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 const LoginScreen = (props) => {
     const [isEnabled, setIsEnable] = useState('Login');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
+    const userSignIn = { username: 'Sally', password: '12345In@' }
+    const userSignUp = { username: 'Sally', password: '12345In@', phone: '012345678'}
+
+    const isLogin = async() => {
+        if(userSignIn.username === username && userSignIn.password === password) {
+            
+            alert('Login Successful!');
+            props.navigation.navigate("User Stack");
+        }
+        else if(username === '' && password === '') {
+            alert('Please fill in your login credentials to continue');
+        }
+        else {
+            alert('Username or password is incorrect. Try again. \n\nUsername: Sally \nPassword: 12345In@')
+        }
+    }
+
+    const isSignUp = async() => {
+        if(userSignUp.username === username && userSignUp.password === password && userSignUp.phone === phone) {
+            alert('Account created successfully');
+            props.navigation.navigate("User Stack");
+        }
+        else if(username === '' && password === '' && phone === '') {
+            alert('Please fill in every fields to continue. \n\nUsername: Sally \nPassword: 12345In@ \nPhone: 01245678');
+        }
+        else{
+            alert("Something is wrong with your account creation...")
+        }
+    }
 
     return(
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <LinearGradient
                 colors={['red', 'yellow']}
                 // style={styles.container}
@@ -23,7 +53,7 @@ const LoginScreen = (props) => {
                 height: "100%",
                 }}
             />
-            <View style={{ flexDirection: 'row', bottom: 200 }}>
+            <View style={{ flex: 1, flexDirection: 'row', top: 80 }}>
                 <TouchableOpacity 
                     onPress={() => setIsEnable('Login')}
                     style={{
@@ -54,23 +84,23 @@ const LoginScreen = (props) => {
 
             {
                 isEnabled === 'Sign up' ? 
-                <View style={{ height: 20, width: '90%', bottom: 100}}>
+                <View style={{ flex: 1, height: 20, width: '85%', top: 20 }}>
                     <TextInput
                         label="Phone Number"
                         value={phone}
                         onChangeText={phone => setPhone(phone)}
                         mode={'flat'}
                         style={{ backgroundColor: 'transparent' }}
-                        // render={props =>
-                        //     <TextInputMask
-                        //       {...props}
-                        //       options={{
-                        //         mask: '999-99999999'
-                        //       }} 
-                        //     />
-                        // }
                     />
-                    <View style={{height: 20}}></View>
+                    <View style={{height: 5}}></View>
+                    <TextInput
+                        label="Username"
+                        value={username}
+                        onChangeText={username => setUsername(username)}
+                        mode={'flat'}
+                        style={{ backgroundColor: 'transparent' }}
+                    />
+                    <View style={{height: 5}}></View>
                     <TextInput
                         label="Password"
                         value={password}
@@ -80,21 +110,13 @@ const LoginScreen = (props) => {
                     />
                 </View>
                 :
-                <View style={{ height: 20, width: '90%', bottom: 100}}>
+                <View style={{ flex: 1, height: 20, width: '85%', top: 40}}>
                     <TextInput
                         label="Username"
                         value={username}
                         onChangeText={username => setUsername(username)}
                         mode={'flat'}
                         style={{ backgroundColor: 'transparent' }}
-                        // render={props =>
-                        //     <TextInputMask
-                        //       {...props}
-                        //       options={{
-                        //         mask: '999-99999999'
-                        //       }} 
-                        //     />
-                        // }
                     />
                     <View style={{height: 20}}></View>
                     <TextInput
@@ -102,16 +124,29 @@ const LoginScreen = (props) => {
                         value={password}
                         onChangeText={password => setPassword(password)}
                         mode={'flat'}
+                        secureTextEntry={true}
                         style={{ backgroundColor: 'transparent' }}
                     />
                 </View>
             }
 
-            <TouchableOpacity style={{...styles.signupButtonStyle, borderRadius: 30, top: 150}} onPress={() => props.navigation.navigate("User Stack")}>
-                <Text style={styles.buttonText}>Sign up</Text>
-            </TouchableOpacity>
-            <Text style={{...styles.signupText, top: 180 }}>Forgot password?</Text>
-        </View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', top: 50 }}>
+                {
+                    isEnabled == 'Sign up' ?
+                        <TouchableOpacity style={{...styles.signupButtonStyle, borderRadius: 30}} onPress={() => isSignUp()}>
+                            <Text style={styles.buttonText}>Sign up</Text>
+                        </TouchableOpacity>
+                    :
+                    isEnabled == 'Login' ?
+                    <TouchableOpacity style={{...styles.signupButtonStyle, borderRadius: 30}} onPress={() => isLogin()}>
+                        <Text style={styles.buttonText}>Sign in</Text>
+                    </TouchableOpacity>
+                    :
+                    <></>
+                }
+                <Text style={{...styles.signupText, top: 10 }}>Forgot password?</Text>
+            </View>
+        </ScrollView>
     )
 }
 
@@ -129,8 +164,6 @@ const styles = StyleSheet.create({
         borderColor: 'grey',
         backgroundColor: 'white',
         justifyContent: 'center',
-        // paddingHorizontal: 12,
-        // marginLeft: 80,
         width: '40%',
         height: 60,
         // bottom: 100

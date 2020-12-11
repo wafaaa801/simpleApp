@@ -27,7 +27,7 @@ const UserStack = () => {
         >
           {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
           <BottomTab.Screen name="Profile" component={ProfileScreen} />
-          <BottomTab.Screen name="Add To Cart" component={AddToCartScreen} />
+          <BottomTab.Screen name="Shopping Cart" component={AddToCartScreen} />
           {/* <BottomTab.Screen name="Home" component={HomeScreen} /> */}
         </BottomTab.Navigator>
     );    
